@@ -18,6 +18,7 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   cart       Cart?
+  orders     Order[]
 }
 
 model Category {
@@ -43,6 +44,29 @@ model CartItem {
   quantity  Int     @default(1)
 }
 
+model Order {
+  id            Int         @id @default(autoincrement())
+  userId        Int
+  user          User        @relation(fields: [userId], references: [id])
+  originalTotal Float
+  discountRate  Float       @default(1.0)
+  total         Float
+  status        String      @default("PENDING")
+  items         OrderItem[]
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  price     Float
+  quantity  Int
+}
+
 model Product {
   id          Int         @id @default(autoincrement())
   name        String
@@ -53,6 +77,7 @@ model Product {
   categoryId  Int
   category    Category    @relation(fields: [categoryId], references: [id])
   cartItems   CartItem[]
+  orderItems  OrderItem[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }

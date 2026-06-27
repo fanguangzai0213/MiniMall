@@ -4,7 +4,8 @@
       "Bash(npm *)",
       "Bash(git *)",
       "Bash(node *)",
-      "Bash(npx prisma *)"
+      "Bash(npx prisma *)",
+      "Bash(npx next *)"
     ],
     "deny": [
       "Bash(rm -rf *)"

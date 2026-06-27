@@ -27,6 +27,7 @@ export function CartClient() {
   const router = useRouter();
   const [cart, setCart] = useState<Cart | null>(null);
   const [loading, setLoading] = useState(true);
+  const [checkingOut, setCheckingOut] = useState(false);
 
   const fetchCart = useCallback(async () => {
     const res = await fetch("/api/cart");
@@ -53,6 +54,18 @@ export function CartClient() {
     await fetch(`/api/cart/${itemId}`, { method: "DELETE" });
     fetchCart();
     router.refresh();
+  }
+
+  async function checkout() {
+    setCheckingOut(true);
+    const res = await fetch("/api/orders", { method: "POST" });
+    const data = await res.json();
+    setCheckingOut(false);
+    if (data.success) {
+      router.push(`/orders/${data.data.id}`);
+    } else {
+      alert(data.error);
+    }
   }
 
   if (loading) {
@@ -134,10 +147,11 @@ export function CartClient() {
           <span className="text-2xl font-bold text-red-600">¥{total.toFixed(2)}</span>
         </div>
         <button
-          disabled
+          onClick={checkout}
+          disabled={checkingOut}
           className="w-full py-3 rounded-lg bg-zinc-900 text-white font-semibold hover:bg-zinc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          结算（即将上线）
+          {checkingOut ? "处理中..." : "结算"}
         </button>
       </div>
     </div>
