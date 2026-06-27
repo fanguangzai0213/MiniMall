@@ -11,7 +11,8 @@ export default async function Home({
   const sp = await searchParams;
   const search = sp.search || "";
   const categorySlug = sp.category || "";
-  const page = Math.max(1, parseInt(sp.page || "1"));
+  const pageNum = parseInt(sp.page || "1");
+  const page = isNaN(pageNum) ? 1 : Math.max(1, pageNum);
 
   // 获取分类列表
   const categories = await prisma.category.findMany({
@@ -70,6 +71,9 @@ export default async function Home({
             placeholder="搜索商品..."
             className="w-full max-w-md px-4 py-2.5 rounded-lg border border-zinc-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 focus:border-transparent"
           />
+          {categorySlug && (
+            <input type="hidden" name="category" value={categorySlug} />
+          )}
         </form>
 
         {/* 分类标签 */}
@@ -87,7 +91,7 @@ export default async function Home({
           {categories.map((c) => (
             <Link
               key={c.id}
-              href={`/?category=${c.slug}`}
+              href={`/?${new URLSearchParams({ search, category: c.slug }).toString()}`}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
                 categorySlug === c.slug
                   ? "bg-zinc-900 text-white"

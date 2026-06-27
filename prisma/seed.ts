@@ -40,9 +40,7 @@ async function main() {
     { name: "无线吸尘器 V12", description: "120AW 强劲吸力、60分钟续航、5重过滤系统", price: 1299, stock: 42, categoryId: categories[3].id },
   ];
 
-  for (const p of products) {
-    await prisma.product.create({ data: p });
-  }
+  await prisma.product.createMany({ data: products });
 
   console.log(`已创建 ${categories.length} 个分类、${products.length} 个商品`);
 }
