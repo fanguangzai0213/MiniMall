@@ -6,12 +6,17 @@ import { LogoutButton } from "./LogoutButton";
 export async function Header() {
   const user = await getAuthUser();
 
+  let userName = "";
   let cartCount = 0;
   if (user) {
-    const cart = await prisma.cart.findUnique({
-      where: { userId: user.userId },
-      include: { items: true },
-    });
+    const [dbUser, cart] = await Promise.all([
+      prisma.user.findUnique({ where: { id: user.userId }, select: { name: true } }),
+      prisma.cart.findUnique({
+        where: { userId: user.userId },
+        include: { items: true },
+      }),
+    ]);
+    userName = dbUser?.name ?? "";
     cartCount = cart?.items.length ?? 0;
   }
 
@@ -24,7 +29,7 @@ export async function Header() {
         <nav className="flex items-center gap-4 text-sm">
           {user ? (
             <>
-              <span className="text-zinc-600">{user.name}</span>
+              <span className="text-zinc-600">{userName}</span>
               <Link href="/cart" className="text-zinc-600 hover:text-zinc-900 relative">
                 购物车
                 {cartCount > 0 && (

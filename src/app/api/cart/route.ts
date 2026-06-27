@@ -11,10 +11,7 @@ export async function GET() {
   let cart = await prisma.cart.findUnique({
     where: { userId: user.userId },
     include: {
-      items: {
-        include: { product: true },
-        orderBy: { id: "asc" },
-      },
+      items: { include: { product: true }, orderBy: { id: "asc" } },
     },
   });
 
@@ -37,6 +34,9 @@ export async function POST(request: NextRequest) {
   const { productId, quantity = 1 } = await request.json();
   if (!productId) {
     return NextResponse.json({ success: false, error: "缺少商品ID" }, { status: 400 });
+  }
+  if (!Number.isInteger(quantity) || quantity <= 0) {
+    return NextResponse.json({ success: false, error: "数量无效" }, { status: 400 });
   }
 
   const product = await prisma.product.findUnique({ where: { id: productId } });
@@ -67,10 +67,7 @@ export async function POST(request: NextRequest) {
   const updated = await prisma.cart.findUnique({
     where: { userId: user.userId },
     include: {
-      items: {
-        include: { product: true },
-        orderBy: { id: "asc" },
-      },
+      items: { include: { product: true }, orderBy: { id: "asc" } },
     },
   });
 

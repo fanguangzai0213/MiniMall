@@ -6,13 +6,14 @@ const adapter = new PrismaBetterSqlite3({ url: "file:./prisma/dev.db" });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  // 清空旧数据
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
   await prisma.user.deleteMany();
 
-  // 创建管理员
-  const adminPassword = await bcrypt.hash("admin123", 10);
+  const adminPassword = await bcrypt.hash(
+    process.env.ADMIN_SEED_PASSWORD || "admin123",
+    10
+  );
   await prisma.user.create({
     data: {
       email: "admin@minimall.com",
@@ -21,9 +22,7 @@ async function main() {
       role: "ADMIN",
     },
   });
-  console.log("管理员账号: admin@minimall.com / admin123");
 
-  // 创建分类
   const categories = await Promise.all([
     prisma.category.create({ data: { name: "数码产品", slug: "digital" } }),
     prisma.category.create({ data: { name: "服装鞋帽", slug: "clothing" } }),
@@ -56,7 +55,7 @@ async function main() {
 
   await prisma.product.createMany({ data: products });
 
-  console.log(`已创建 ${categories.length} 个分类、${products.length} 个商品`);
+  console.log(`已创建管理员、${categories.length} 个分类、${products.length} 个商品`);
 }
 
 main()
