@@ -43,25 +43,7 @@ export default async function Home({
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
   return (
-    <div className="bg-zinc-50 min-h-screen">
-      {/* 顶部导航 */}
-      <header className="bg-white border-b border-zinc-200 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-          <Link href="/" className="text-xl font-bold text-zinc-900">
-            Mini Mall
-          </Link>
-          <nav className="flex items-center gap-4 text-sm">
-            <Link href="/cart" className="text-zinc-600 hover:text-zinc-900">
-              购物车
-            </Link>
-            <Link href="/login" className="text-zinc-600 hover:text-zinc-900">
-              登录
-            </Link>
-          </nav>
-        </div>
-      </header>
-
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl mx-auto px-4 py-8">
         {/* 搜索框 */}
         <form className="mb-6">
           <input
@@ -174,7 +156,6 @@ export default async function Home({
             )}
           </>
         )}
-      </div>
     </div>
   );
 }

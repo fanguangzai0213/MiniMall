@@ -1,5 +1,6 @@
 import { PrismaClient } from "../src/generated/prisma/client";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import bcrypt from "bcryptjs";
 
 const adapter = new PrismaBetterSqlite3({ url: "file:./prisma/dev.db" });
 const prisma = new PrismaClient({ adapter });
@@ -8,6 +9,19 @@ async function main() {
   // 清空旧数据
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
+  await prisma.user.deleteMany();
+
+  // 创建管理员
+  const adminPassword = await bcrypt.hash("admin123", 10);
+  await prisma.user.create({
+    data: {
+      email: "admin@minimall.com",
+      password: adminPassword,
+      name: "管理员",
+      role: "ADMIN",
+    },
+  });
+  console.log("管理员账号: admin@minimall.com / admin123");
 
   // 创建分类
   const categories = await Promise.all([

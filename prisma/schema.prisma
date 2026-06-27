@@ -7,6 +7,18 @@ datasource db {
   provider = "sqlite"
 }
 
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  name       String
+  role       String   @default("USER")
+  tier       Int      @default(0)
+  totalSpent Float    @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
 model Category {
   id    Int    @id @default(autoincrement())
   name  String @unique
