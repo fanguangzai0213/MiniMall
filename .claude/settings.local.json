@@ -1,15 +1,26 @@
 {
-	"permissions":{
-		"allow":[
-			"read",
-			"write",
-			"Bash(npm *)",
-			"Bash(git *)",
-			"Bash(node *)"
-		],
-		"deny":[
-		"Bash(rm -rf *)"
-		]
-	},
-	"autoCompacThreshold":80
+  "permissions": {
+    "allow": [
+      "Bash(npm *)",
+      "Bash(git *)",
+      "Bash(node *)",
+      "Bash(npx prisma *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo \"文件已修改，建议检查一下改了什么\""
+          }
+        ]
+      }
+    ]
+  }
 }
