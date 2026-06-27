@@ -47,8 +47,8 @@ export async function PATCH(
     },
   });
 
-  // 支付完成：累加消费金额并重算等级
-  if (status === "PAID" && order.status !== "PAID") {
+  // 支付完成：仅 PENDING→PAID 累加消费金额
+  if (status === "PAID" && order.status === "PENDING") {
     const newTotalSpent = order.user.totalSpent + order.total;
     const { tier } = getDiscountRate(newTotalSpent);
     await prisma.user.update({
